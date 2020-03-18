@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const morgan = require('morgan');
 const colors = require('colors');
 const connectB = require('./config/db');
+const errorHandler = require('./middleware/error');
 
 //load env var
 dotenv.config({ path: "./config/config.env" });
@@ -17,6 +18,8 @@ const bootcamps = require('./routes/bootcamps');
 const app = express();
 const PORT = process.env.PORT || 6000;
 
+//Body Parser
+app.use(express.json());
 //dev logging env
 
 if(process.env.NODE_ENV === 'development'){
@@ -24,6 +27,8 @@ if(process.env.NODE_ENV === 'development'){
 }
 // Mount router
 app.use('/api/v1/bootcamps',bootcamps);
+//should be after bootcamp calling
+app.use(errorHandler);
 
 const server =  app.listen(
   PORT,
